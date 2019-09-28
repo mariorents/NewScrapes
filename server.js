@@ -3,11 +3,10 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const exphbs = require("express-handlebars");
 const db = require("./models");
 const PORT = 3000;
 const app = express();
-
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newScrapper";
 
 app.use(logger("dev"));
 app.use(express.urlencoded({
@@ -15,13 +14,10 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 app.use(express.static("public"));
-app.engine("handlebars", exphbs({
-    defaultLayout: "main"
-}));
-app.set("view engine", "handlebars");
-mongoose.connect("mongodb://localhost/newScrapper", {
-    useNewUrlParser: true
-});
+
+
+mongoose.connect(MONGODB_URI);
+
 
 app.get("/scrape", function(req, res) {
     axios.get("http://www.vice.com/en_us/topic/hacking/").then(function(response){
